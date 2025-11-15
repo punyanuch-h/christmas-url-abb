@@ -47,7 +47,15 @@ function App() {
   const [url, setUrl] = useState("");
   const [result, setResult] = useState("");
 
-  const WORKER_API = import.meta.env.VITE_WORKER_API || "/shorten";
+  const getWorkerApi = () => {
+    if (import.meta.env.VITE_WORKER_API) {
+      return import.meta.env.VITE_WORKER_API;
+    } else {
+      return "/shorten";
+    }
+  };
+
+  const VITE_WORKER_API = getWorkerApi();
 
   const onShorten = async () => {
     if (!url.trim()) {
@@ -62,9 +70,14 @@ function App() {
       return;
     }
 
+    if (!VITE_WORKER_API) {
+      setResult("Error: Worker API URL not configured. Please set VITE_WORKER_API environment variable.");
+      return;
+    }
+
     try {
       // 2) ยิง API ไป Cloudflare Worker
-      const res = await fetch(WORKER_API, {
+      const res = await fetch(VITE_WORKER_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ longUrl: url }),
