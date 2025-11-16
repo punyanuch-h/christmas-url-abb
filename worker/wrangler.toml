@@ -7,4 +7,4 @@ kv_namespaces = [
 ]
 
 [vars]
-WORKER_DOMAIN = "u"
+WORKER_DOMAIN = "u.christmasabb.workers.dev"
