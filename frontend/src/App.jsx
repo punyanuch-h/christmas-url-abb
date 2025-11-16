@@ -48,14 +48,15 @@ function App() {
   const [result, setResult] = useState("");
 
   const getWorkerApi = () => {
-    if (import.meta.env.VITE_WORKER_API) {
-      return import.meta.env.VITE_WORKER_API;
-    } else {
-      return "/shorten";
-    }
+    const base = import.meta.env.VITE_WORKER_API;
+    if (!base) return null;
+  
+    return base.endsWith("/")
+      ? base + "shorten"
+      : base + "/shorten";
   };
 
-  const VITE_WORKER_API = getWorkerApi();
+  const WORKER_API = getWorkerApi();
 
   const onShorten = async () => {
     if (!url.trim()) {
@@ -63,21 +64,15 @@ function App() {
       return;
     }
 
-    // 1) เช็ค localStorage ว่ามีลิงก์นี้หรือยัง
     const cached = localStorage.getItem("SHORT_" + url);
     if (cached) {
       setResult(cached);
       return;
     }
 
-    if (!VITE_WORKER_API) {
-      setResult("Error: Worker API URL not configured. Please set VITE_WORKER_API environment variable.");
-      return;
-    }
 
     try {
-      // 2) ยิง API ไป Cloudflare Worker
-      const res = await fetch(VITE_WORKER_API, {
+      const res = await fetch(WORKER_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ longUrl: url }),
@@ -86,15 +81,13 @@ function App() {
       const data = await res.json();
 
       if (data.shortUrl) {
-        // 3) เก็บใน localStorage
         localStorage.setItem("SHORT_" + url, data.shortUrl);
-
-        // 4) แสดงผล
         setResult(data.shortUrl);
       } else {
         setResult("Error: ไม่สามารถย่อลิงก์ได้");
       }
-    } catch {
+    } catch (error) {
+      console.error(error);
       setResult("เกิดข้อผิดพลาด");
     }
   };
