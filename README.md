@@ -175,14 +175,6 @@ Make sure to configure your `wrangler.toml` with your Cloudflare account details
 - `npm run dev` - Start local development server
 - `npm run deploy` - Deploy to Cloudflare Workers
 
-## 🤝 Contributing
-
-Contributions are welcome! Whether you're adding new features, fixing bugs, or spreading more Christmas cheer, feel free to open a pull request.
-
-## 📄 License
-
-This project is open source and available for everyone to enjoy and modify.
-
 ## 🎅 Acknowledgments
 
 Built with ❤️ and 🎄 Christmas spirit. May your URLs be short and your holidays be merry!
